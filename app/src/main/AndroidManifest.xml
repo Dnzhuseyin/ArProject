@@ -21,7 +21,7 @@
         tools:targetApi="31">
         
         <!-- ARCore API için meta-data -->
-        <meta-data android:name="com.google.ar.core" android:value="required" />
+        <meta-data android:name="com.google.ar.core" android:value="required" tools:replace="android:value" />
         
         <!-- AR Activity -->
         <activity
