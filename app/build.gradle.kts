@@ -41,22 +41,26 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
     
-    // ARCore bağımlılıkları
+    // ARCore ve SceneView için güncel bağımlılıklar
     implementation("com.google.ar:core:1.40.0")
-    implementation("io.github.sceneview:arsceneview:0.10.0")
+    implementation("io.github.sceneview:arsceneview:1.2.3")
     
-    // AppCompat ve material bileşenleri (AR Fragment için gerekli)
+    // Filament bağımlılıkları
+    implementation("com.google.android.filament:filament-android:1.50.0")
+    implementation("com.google.android.filament:filament-utils-android:1.50.0")
+    
+    // AppCompat ve Material Design bileşenleri
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     
     testImplementation(libs.junit)
