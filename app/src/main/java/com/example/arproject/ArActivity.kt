@@ -4,21 +4,26 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.filament.utils.Color
 import com.google.ar.core.Anchor
-import com.google.ar.core.Config
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
+import com.google.android.filament.utils.Float3
+import com.google.android.filament.Color
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
+import io.github.sceneview.node.CubeNode
+import io.github.sceneview.node.SphereNode
+import io.github.sceneview.node.CylinderNode
 
 class ArActivity : AppCompatActivity() {
 
@@ -115,7 +120,7 @@ class ArActivity : AppCompatActivity() {
 
     private fun setupAr() {
         // AR Modunu ve yüzey algılamayı yapılandırma
-        arSceneView.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+        arSceneView.enableARCore = true
         arSceneView.planeRenderer.isEnabled = true
         arSceneView.planeRenderer.isShadowReceiver = true
         
@@ -132,20 +137,19 @@ class ArActivity : AppCompatActivity() {
         arSceneView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 // Ekrandaki dokunma noktasını kullanarak AR düzlemlerini test etme
-                val hitResults = arSceneView.hitTest(event.x, event.y)
+                val hitResults = arSceneView.hitTest(event.x, event.y, true, false)
                 
                 // Geçerli bir düzlem bul
                 hitResults.firstOrNull { hit ->
                     // Sadece yatay düzlemler üzerinde çalış
-                    val trackable = hit.hitPose.trackable
-                    trackable is Plane && trackable.isPoseInPolygon(hit.hitPose) && 
-                    trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING
+                    val trackable = hit.trackable
+                    trackable is Plane && trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING
                 }?.let { hit ->
                     // Önceki modelimizi temizle
                     modelNode.detachAnchor()
                     
                     // Yeni anchor oluştur ve modeli yerleştir
-                    arSceneView.session?.createAnchor(hit.hitPose)?.let { anchor ->
+                    hit.createAnchor()?.let { anchor ->
                         modelNode.anchor = anchor
                         
                         // Başarılı yerleştirme için bildirim göster
@@ -170,22 +174,31 @@ class ArActivity : AppCompatActivity() {
         modelNode = ArModelNode(PlacementMode.PLANE_HORIZONTAL).apply {
             // Geçerli şekle göre modeli yükle
             when(currentShape) {
-                ShapeType.CUBE -> loadCube(
-                    size = 0.2f,
-                    center = Position(0.0f, 0.0f, 0.0f),
-                    color = currentColor
-                )
-                ShapeType.SPHERE -> loadSphere(
-                    radius = 0.15f,
-                    center = Position(0.0f, 0.0f, 0.0f),
-                    color = currentColor
-                )
-                ShapeType.CYLINDER -> loadCylinder(
-                    radius = 0.1f,
-                    length = 0.25f,
-                    center = Position(0.0f, 0.0f, 0.0f),
-                    color = currentColor
-                )
+                ShapeType.CUBE -> {
+                    val cubeNode = CubeNode(
+                        size = 0.2f,
+                        center = Position(0.0f, 0.1f, 0.0f),
+                        color = currentColor
+                    )
+                    addChild(cubeNode)
+                }
+                ShapeType.SPHERE -> {
+                    val sphereNode = SphereNode(
+                        radius = 0.15f,
+                        center = Position(0.0f, 0.15f, 0.0f),
+                        color = currentColor
+                    )
+                    addChild(sphereNode)
+                }
+                ShapeType.CYLINDER -> {
+                    val cylinderNode = CylinderNode(
+                        radius = 0.1f,
+                        height = 0.25f,
+                        center = Position(0.0f, 0.125f, 0.0f),
+                        color = currentColor
+                    )
+                    addChild(cylinderNode)
+                }
             }
             
             // Model ölçeği ve görünürlüğü
@@ -207,18 +220,38 @@ class ArActivity : AppCompatActivity() {
         // Mevcut anchor'u koru
         val currentAnchor = modelNode.anchor
         
-        // Eski modeli scene'den kaldır
-        arSceneView.removeChild(modelNode)
+        // Önceki tüm çocuk nodları temizle
+        modelNode.children.toList().forEach { child ->
+            modelNode.removeChild(child)
+        }
         
-        // Yeni model oluştur
-        createModelNode()
-        
-        // Yeni modeli scene'e ekle
-        arSceneView.addChild(modelNode)
-        
-        // Eğer önceden bir anchoru varsa onu yeniden kullan
-        if (currentAnchor != null) {
-            modelNode.anchor = currentAnchor
+        // Seçilen şekil türüne göre yeni şekil ekle
+        when(currentShape) {
+            ShapeType.CUBE -> {
+                val cubeNode = CubeNode(
+                    size = 0.2f,
+                    center = Position(0.0f, 0.1f, 0.0f),
+                    color = currentColor
+                )
+                modelNode.addChild(cubeNode)
+            }
+            ShapeType.SPHERE -> {
+                val sphereNode = SphereNode(
+                    radius = 0.15f,
+                    center = Position(0.0f, 0.15f, 0.0f),
+                    color = currentColor
+                )
+                modelNode.addChild(sphereNode)
+            }
+            ShapeType.CYLINDER -> {
+                val cylinderNode = CylinderNode(
+                    radius = 0.1f,
+                    height = 0.25f,
+                    center = Position(0.0f, 0.125f, 0.0f),
+                    color = currentColor
+                )
+                modelNode.addChild(cylinderNode)
+            }
         }
     }
     
