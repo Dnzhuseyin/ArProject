@@ -55,8 +55,8 @@ dependencies {
     implementation("io.github.sceneview:arsceneview:1.2.3")
     
     // Filament bağımlılıkları
-    implementation("com.google.android.filament:filament-android:1.50.0")
-    implementation("com.google.android.filament:filament-utils-android:1.50.0")
+    implementation("com.google.android.filament:filament-android:1.45.0")
+    implementation("com.google.android.filament:filament-utils-android:1.45.0")
     
     // AppCompat ve Material Design bileşenleri
     implementation("androidx.appcompat:appcompat:1.6.1")
