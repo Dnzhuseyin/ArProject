@@ -97,8 +97,8 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.2.1")
     implementation("androidx.media3:media3-common:1.2.1")
     
-    // Charts for statistics
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    // Charts for statistics - Using Compose-friendly chart library
+    implementation("co.yml:ycharts:2.1.0")
     
     // Sensors
     implementation("androidx.core:core-ktx:1.12.0")
