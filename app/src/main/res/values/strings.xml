@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Fizik Tedavi</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Ana Sayfa</string>
+    <string name="nav_exercises">Egzersizler</string>
+    <string name="nav_statistics">İstatistikler</string>
+    <string name="nav_messages">Mesajlar</string>
+    <string name="nav_profile">Profil</string>
+    
+    <!-- Home Screen -->
+    <string name="welcome_message">Bugün egzersizlerinize devam etmeye hazır mısınız?</string>
+    <string name="daily_progress">Günlük İlerleme</string>
+    <string name="todays_exercises">Bugünkü Egzersizleriniz</string>
+    <string name="daily_tasks">Günlük Görevler</string>
+    <string name="recent_achievements">Son Başarımlar</string>
+    
+    <!-- Exercise Screen -->
+    <string name="my_exercises">Egzersizlerim</string>
+    <string name="start_exercise">Egzersiz Başlat</string>
+    <string name="no_exercises_assigned">Henüz atanmış egzersiz bulunmuyor</string>
+    
+    <!-- Common -->
+    <string name="loading">Yükleniyor...</string>
+    <string name="error">Hata</string>
+    <string name="retry">Tekrar Dene</string>
+    <string name="cancel">İptal</string>
+    <string name="save">Kaydet</string>
+    <string name="edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="search">Ara</string>
+    <string name="settings">Ayarlar</string>
+    
+    <!-- Points and Progress -->
+    <string name="points">Puan</string>
+    <string name="level">Seviye</string>
+    <string name="streak_days">Seri (Gün)</string>
+    <string name="total_points">Toplam Puan</string>
+    <string name="completed_exercises">Tamamlanan Egzersizler</string>
+    <string name="total_time">Toplam Süre</string>
+</resources>

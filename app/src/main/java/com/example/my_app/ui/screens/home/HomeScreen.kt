@@ -1,0 +1,24 @@
+package com.example.my_app.ui.screens.home
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.my_app.ui.navigation.Screen
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {\n    val uiState by viewModel.uiState.collectAsState()\n\n    LazyColumn(\n        modifier = Modifier\n            .fillMaxSize()\n            .padding(16.dp),\n        verticalArrangement = Arrangement.spacedBy(16.dp)\n    ) {\n        item {\n            // Welcome header\n            WelcomeHeader(userName = uiState.userName)\n        }\n        \n        item {\n            // Daily progress summary\n            DailyProgressCard(\n                todayExercises = uiState.todayCompletedExercises,\n                totalExercises = uiState.todayTotalExercises,\n                todayPoints = uiState.todayPoints,\n                streak = uiState.streakDays\n            )\n        }\n        \n        item {\n            // Quick actions\n            QuickActionsRow(\n                onStartExercise = { navController.navigate(Screen.Exercises.route) },\n                onViewProgress = { navController.navigate(Screen.Statistics.route) },\n                onViewMessages = { navController.navigate(Screen.Messages.route) },\n                onViewLeaderboard = { navController.navigate(Screen.Leaderboard.route) }\n            )\n        }\n        \n        item {\n            // Today's assigned exercises\n            Text(\n                text = \"Bugünkü Egzersizleriniz\",\n                style = MaterialTheme.typography.headlineSmall,\n                fontWeight = FontWeight.Bold\n            )\n        }\n        \n        item {\n            if (uiState.todayExercises.isNotEmpty()) {\n                LazyRow(\n                    horizontalArrangement = Arrangement.spacedBy(12.dp)\n                ) {\n                    items(uiState.todayExercises) { exercise ->\n                        ExerciseCard(\n                            exercise = exercise,\n                            onClick = {\n                                navController.navigate(\n                                    Screen.ExerciseDetail.createRoute(exercise.id)\n                                )\n                            }\n                        )\n                    }\n                }\n            } else {\n                Card {\n                    Box(\n                        modifier = Modifier\n                            .fillMaxWidth()\n                            .padding(24.dp),\n                        contentAlignment = Alignment.Center\n                    ) {\n                        Text(\n                            text = \"Bugün için atanmış egzersiz bulunmuyor.\",\n                            style = MaterialTheme.typography.bodyMedium\n                        )\n                    }\n                }\n            }\n        }\n        \n        item {\n            // Daily tasks\n            Text(\n                text = \"Günlük Görevler\",\n                style = MaterialTheme.typography.headlineSmall,\n                fontWeight = FontWeight.Bold\n            )\n        }\n        \n        items(uiState.dailyTasks) { task ->\n            DailyTaskCard(\n                task = task,\n                onCompleteTask = { viewModel.completeTask(task.id) }\n            )\n        }\n        \n        item {\n            // Recent achievements\n            if (uiState.recentAchievements.isNotEmpty()) {\n                Text(\n                    text = \"Son Başarımlar\",\n                    style = MaterialTheme.typography.headlineSmall,\n                    fontWeight = FontWeight.Bold\n                )\n                \n                LazyRow(\n                    horizontalArrangement = Arrangement.spacedBy(12.dp)\n                ) {\n                    items(uiState.recentAchievements) { achievement ->\n                        AchievementCard(achievement = achievement)\n                    }\n                }\n            }\n        }\n    }\n}
